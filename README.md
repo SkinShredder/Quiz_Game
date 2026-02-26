@@ -2,7 +2,7 @@
 
 > Test your knowledge across 8 categories with 3 difficulty levels. Create a profile, track your streaks, and compete for highscores!
 
-**Live site:** [skinshredder.github.io/quiz-game](https://skinshredder.github.io/quiz-game/)
+**Live site:** [skinshredder.github.io/Quiz_Game](https://skinshredder.github.io/Quiz_Game/)
 
 ## Features
 
