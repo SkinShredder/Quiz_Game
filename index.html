@@ -238,6 +238,7 @@ DATE: 2026-02-18
 
             <!-- Quiz header -->
             <div class="quiz__header">
+                <button class="quiz__quit-btn" id="btn-quit-quiz" aria-label="Quit quiz">✕</button>
                 <span class="quiz__category" id="quiz-category">Geography</span>
                 <span class="quiz__progress" id="quiz-progress">1 / 12</span>
                 <span class="quiz__streak hidden" id="quiz-streak"></span>
@@ -266,6 +267,18 @@ DATE: 2026-02-18
 
             <!-- Feedback area -->
             <div class="quiz__feedback" id="quiz-feedback"></div>
+
+            <!-- Quit confirmation modal -->
+            <div class="quit-modal hidden" id="quit-modal">
+                <div class="quit-modal__box">
+                    <p class="quit-modal__text">Are you sure you want to quit?</p>
+                    <p class="quit-modal__subtext">Your progress will be lost.</p>
+                    <div class="quit-modal__buttons">
+                        <button class="btn btn--secondary" id="btn-quit-cancel">Keep Playing</button>
+                        <button class="btn btn--danger" id="btn-quit-confirm">Quit</button>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </section>
