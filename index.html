@@ -1,0 +1,354 @@
+<!--
+===============================================
+FILE: index.html
+PURPOSE: Main page for the Interactive Quiz Game — all 4 views
+PROJECT: 1.2 Interactive Quiz Game
+AUTHOR: Sebastian Larsen (SkinShredder)
+DATE: 2026-02-18
+===============================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive Quiz Game with 8 categories and 3 difficulty levels.">
+
+    <title>Quiz Game | SkinShredder</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ==================== VIEW 0: WELCOME SCREEN ==================== -->
+    <section class="view view--welcome active" id="view-welcome">
+        <div class="container">
+
+            <header class="welcome__header">
+                <h1 class="welcome__title">Quiz Game</h1>
+                <p class="welcome__subtitle">Create a player or log in to start</p>
+            </header>
+
+            <!-- Step 0: Choose new or returning -->
+            <div class="welcome__step" id="step-choice">
+                <button class="btn btn--welcome" id="btn-new-player">
+                    <span class="btn__icon">✨</span>
+                    New Player
+                </button>
+                <button class="btn btn--welcome btn--welcome-secondary" id="btn-returning-player">
+                    <span class="btn__icon">👋</span>
+                    Returning Player
+                </button>
+            </div>
+
+            <!-- Step 1: Choose gender -->
+            <div class="welcome__step hidden" id="step-gender">
+                <h2 class="welcome__step-title">Choose your character</h2>
+                <div class="gender-grid">
+                    <button class="gender-btn" data-gender="male">
+                        <svg class="gender-icon" viewBox="0 0 80 80">
+                            <circle cx="40" cy="35" r="22" fill="#60a5fa" />
+                            <circle cx="33" cy="32" r="2.5" fill="#1e3a5f" />
+                            <circle cx="47" cy="32" r="2.5" fill="#1e3a5f" />
+                            <path d="M34 40 Q40 45 46 40" stroke="#1e3a5f" stroke-width="2" fill="none"
+                                stroke-linecap="round" />
+                            <path d="M20 28 Q22 12 40 12 Q58 12 60 28" fill="#4a3728" />
+                        </svg>
+                        <span>Male</span>
+                    </button>
+                    <button class="gender-btn" data-gender="female">
+                        <svg class="gender-icon" viewBox="0 0 80 80">
+                            <circle cx="40" cy="35" r="22" fill="#f9a8d4" />
+                            <circle cx="33" cy="32" r="2.5" fill="#4a1942" />
+                            <circle cx="47" cy="32" r="2.5" fill="#4a1942" />
+                            <path d="M34 40 Q40 45 46 40" stroke="#4a1942" stroke-width="2" fill="none"
+                                stroke-linecap="round" />
+                            <path d="M16 35 Q16 8 40 10 Q64 8 64 35" fill="#8B4513" />
+                            <path d="M16 35 Q14 55 22 60" stroke="#8B4513" stroke-width="6" fill="none"
+                                stroke-linecap="round" />
+                            <path d="M64 35 Q66 55 58 60" stroke="#8B4513" stroke-width="6" fill="none"
+                                stroke-linecap="round" />
+                        </svg>
+                        <span>Female</span>
+                    </button>
+                </div>
+                <button class="btn btn--link welcome__back" id="btn-back-to-choice">← Back</button>
+            </div>
+
+            <!-- Step 2: Choose avatar -->
+            <div class="welcome__step hidden" id="step-avatar">
+                <h2 class="welcome__step-title">Choose your avatar</h2>
+                <div class="avatar-grid" id="avatar-grid">
+                    <!-- Filled dynamically by JS -->
+                </div>
+                <button class="btn btn--link welcome__back" id="btn-back-to-gender">← Back</button>
+            </div>
+
+            <!-- Step 3: Enter name + PIN -->
+            <div class="welcome__step hidden" id="step-credentials">
+                <h2 class="welcome__step-title">Create your profile</h2>
+                <div class="welcome__selected-avatar" id="selected-avatar-preview"></div>
+                <div class="welcome__form">
+                    <div class="form-group">
+                        <label class="form-label" for="input-username">Username</label>
+                        <input type="text" id="input-username" class="form-input" placeholder="Enter your name"
+                            maxlength="15" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="input-pin">4-digit PIN</label>
+                        <input type="password" id="input-pin" class="form-input form-input--pin" placeholder="• • • •"
+                            maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+                    </div>
+                    <p class="form-error hidden" id="create-error"></p>
+                    <button class="btn btn--start" id="btn-create-account">Create Player</button>
+                </div>
+                <button class="btn btn--link welcome__back" id="btn-back-to-avatar">← Back</button>
+            </div>
+
+            <!-- Step: Returning player login -->
+            <div class="welcome__step hidden" id="step-login">
+                <h2 class="welcome__step-title">Welcome back!</h2>
+                <div class="user-list" id="user-list">
+                    <!-- Filled dynamically by JS -->
+                </div>
+                <p class="form-error hidden" id="login-error"></p>
+                <!-- PIN input shown after selecting user -->
+                <div class="login-pin hidden" id="login-pin-section">
+                    <div class="login-pin__user" id="login-selected-user"></div>
+                    <div class="form-group">
+                        <label class="form-label" for="login-pin-input">Enter your PIN</label>
+                        <input type="password" id="login-pin-input" class="form-input form-input--pin"
+                            placeholder="• • • •" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+                            autocomplete="off" />
+                    </div>
+                    <button class="btn btn--start" id="btn-login">Log In</button>
+                </div>
+                <button class="btn btn--link welcome__back" id="btn-back-to-choice-from-login">← Back</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==================== VIEW 1: START SCREEN ==================== -->
+    <section class="view view--start" id="view-start">
+        <div class="container">
+
+            <header class="start__header">
+                <h1 class="start__title">Quiz Game</h1>
+                <p class="start__subtitle">Test your knowledge across 8 categories</p>
+                <div class="start__user" id="start-user">
+                    <span class="start__user-avatar" id="start-user-avatar"></span>
+                    <span class="start__user-name" id="start-user-name"></span>
+                    <button class="btn btn--link btn--logout" id="btn-logout">Log out</button>
+                </div>
+            </header>
+
+            <!-- Category selection -->
+            <div class="start__section">
+                <h2 class="start__label">Choose a Category</h2>
+                <div class="category-grid">
+                    <button class="category-btn" data-category="geography">
+                        <span class="category-btn__icon">🌍</span>
+                        <span class="category-btn__name">Geography</span>
+                    </button>
+                    <button class="category-btn" data-category="animals">
+                        <span class="category-btn__icon">🐾</span>
+                        <span class="category-btn__name">Animals</span>
+                    </button>
+                    <button class="category-btn" data-category="languages">
+                        <span class="category-btn__icon">🗣️</span>
+                        <span class="category-btn__name">Languages</span>
+                    </button>
+                    <button class="category-btn" data-category="sports">
+                        <span class="category-btn__icon">⚽</span>
+                        <span class="category-btn__name">Sports</span>
+                    </button>
+                    <button class="category-btn" data-category="music">
+                        <span class="category-btn__icon">🎵</span>
+                        <span class="category-btn__name">Music</span>
+                    </button>
+                    <button class="category-btn" data-category="food">
+                        <span class="category-btn__icon">🍕</span>
+                        <span class="category-btn__name">Food</span>
+                    </button>
+                    <button class="category-btn" data-category="gaming">
+                        <span class="category-btn__icon">🎮</span>
+                        <span class="category-btn__name">Gaming</span>
+                    </button>
+                    <button class="category-btn" data-category="fashion">
+                        <span class="category-btn__icon">👜</span>
+                        <span class="category-btn__name">Fashion</span>
+                    </button>
+                </div>
+                <button class="category-btn category-btn--mixed selected" data-category="mixed">
+                    <span class="category-btn__icon">🎲</span>
+                    <span class="category-btn__name">Mixed — All Categories</span>
+                </button>
+            </div>
+
+            <!-- Difficulty selection -->
+            <div class="start__section">
+                <h2 class="start__label">Choose Difficulty</h2>
+                <div class="difficulty-group">
+                    <button class="difficulty-btn selected" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+                </div>
+            </div>
+
+            <!-- Start button -->
+            <button class="btn btn--start" id="btn-start">Start Quiz</button>
+
+            <!-- Highscore preview -->
+            <div class="start__section highscore-preview">
+                <h2 class="start__label">🏆 Best Scores</h2>
+                <div class="highscore-preview__grid">
+                    <div class="highscore-preview__card">
+                        <span class="highscore-preview__difficulty">Easy</span>
+                        <span class="highscore-preview__score" id="preview-easy">—</span>
+                    </div>
+                    <div class="highscore-preview__card">
+                        <span class="highscore-preview__difficulty">Medium</span>
+                        <span class="highscore-preview__score" id="preview-medium">—</span>
+                    </div>
+                    <div class="highscore-preview__card">
+                        <span class="highscore-preview__difficulty">Hard</span>
+                        <span class="highscore-preview__score" id="preview-hard">—</span>
+                    </div>
+                </div>
+                <button class="btn btn--link" id="btn-show-highscores">View All Highscores</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==================== VIEW 2: QUIZ SCREEN ==================== -->
+    <section class="view view--quiz" id="view-quiz">
+        <div class="container">
+
+            <!-- Quiz header -->
+            <div class="quiz__header">
+                <span class="quiz__category" id="quiz-category">Geography</span>
+                <span class="quiz__progress" id="quiz-progress">1 / 12</span>
+                <span class="quiz__streak hidden" id="quiz-streak"></span>
+                <span class="quiz__score" id="quiz-score">Score: 0</span>
+            </div>
+
+            <!-- Timer bar -->
+            <div class="timer">
+                <div class="timer__bar" id="timer-bar"></div>
+            </div>
+            <span class="timer__text" id="timer-text">15s</span>
+
+            <!-- Question -->
+            <h2 class="quiz__question" id="quiz-question">What is the capital of Denmark?</h2>
+
+            <!-- Source category badge — visible in mixed mode only -->
+            <div class="quiz__source-category hidden" id="quiz-source-category"></div>
+
+            <!-- Answer buttons -->
+            <div class="answers" id="answers">
+                <button class="answer-btn" data-index="0">Copenhagen</button>
+                <button class="answer-btn" data-index="1">Aarhus</button>
+                <button class="answer-btn" data-index="2">Odense</button>
+                <button class="answer-btn" data-index="3">Aalborg</button>
+            </div>
+
+            <!-- Feedback area -->
+            <div class="quiz__feedback" id="quiz-feedback"></div>
+
+        </div>
+    </section>
+
+    <!-- ==================== VIEW 3: RESULT SCREEN ==================== -->
+    <section class="view view--result" id="view-result">
+        <div class="container">
+
+            <h1 class="result__title" id="result-title">Quiz Complete!</h1>
+
+            <div class="result__stats">
+                <div class="result__stat">
+                    <span class="result__stat-value" id="result-score">0</span>
+                    <span class="result__stat-label">Points</span>
+                </div>
+                <div class="result__stat">
+                    <span class="result__stat-value" id="result-correct">0/12</span>
+                    <span class="result__stat-label">Correct</span>
+                </div>
+                <div class="result__stat">
+                    <span class="result__stat-value" id="result-accuracy">0%</span>
+                    <span class="result__stat-label">Accuracy</span>
+                </div>
+                <div class="result__stat hidden">
+                    <span class="result__stat-value" id="result-streak">—</span>
+                    <span class="result__stat-label">Best Streak</span>
+                </div>
+            </div>
+
+            <!-- New highscore message (hidden by default) -->
+            <div class="result__highscore hidden" id="result-highscore">
+                🏆 New Highscore!
+            </div>
+
+            <div class="result__buttons">
+                <button class="btn btn--primary" id="btn-play-again">Play Again</button>
+                <button class="btn btn--secondary" id="btn-back-home">Back to Menu</button>
+            </div>
+
+            <!-- Post-game review -->
+            <div class="review">
+                <h2 class="review__title">📋 Question Review</h2>
+                <div class="review__list" id="review-list"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==================== VIEW 4: HIGHSCORES SCREEN ==================== -->
+    <section class="view view--highscores" id="view-highscores">
+        <div class="container">
+
+            <h1 class="highscores__title">🏆 Highscores</h1>
+
+            <!-- Difficulty tabs -->
+            <div class="highscores__tabs">
+                <button class="highscores__tab active" data-hs-difficulty="easy">Easy</button>
+                <button class="highscores__tab" data-hs-difficulty="medium">Medium</button>
+                <button class="highscores__tab" data-hs-difficulty="hard">Hard</button>
+            </div>
+
+            <!-- Overall best for selected difficulty -->
+            <div class="highscores__overall" id="hs-overall">
+                <span class="highscores__overall-label">Overall Best:</span>
+                <span class="highscores__overall-score" id="hs-overall-score">—</span>
+            </div>
+
+            <!-- Scores per category -->
+            <div class="highscores__list" id="hs-list">
+                <!-- Filled dynamically by JS -->
+            </div>
+
+            <div class="highscores__buttons">
+                <button class="btn btn--secondary" id="btn-back-from-hs">Back to Menu</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Scripts — questions first (data), then game logic -->
+    <script src="js/questions.js"></script>
+    <script src="js/game.js"></script>
+
+</body>
+
+</html>
